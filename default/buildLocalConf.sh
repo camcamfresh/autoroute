@@ -28,6 +28,15 @@ except:
     exit(1)
 
 ipaddr = container.attrs['NetworkSettings']['IPAddress']
+
+if ipaddr is None:
+    try:
+        networks = container.attrs['NetworkSettings']['Networks'].keys()
+        if networks is not None and len(networks) > 0:
+            ipaddr = container.attrs['NetworkSettings']['Networks'][networks[0]]['IPAddress']
+    except:
+        print('Exception occured parsing IP Address', file=sys.stderr)
+
 if ipaddr is None or len(ipaddr) == 0:
     print('Unreachable IP Address: ' + ipaddr, file=sys.stderr)
     exit(1)
