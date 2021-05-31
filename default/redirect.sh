@@ -18,8 +18,8 @@ if [[ $SUBDOMAIN ]]; then
         fi
     else
         # Divert TLD Request
-        for TLD in $DOMAINS; do
-            if [[ $TLD == $DOMAIN ]]; then
+        for RECOGNIZED_DOMAIN in $DOMAINS; do
+            if [[ $RECOGNIZED_DOMAIN == $DOMAIN ]]; then
                 ./buildLocalConf.sh $DOMAIN $SUBDOMAIN $PARAMETER;
                 # ./requestCertbot.sh $DOMAIN $SUBDOMAIN &
                 if [ $? -eq 0 ]; then
