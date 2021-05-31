@@ -10,14 +10,18 @@ COPY init.sh       /init.sh
 COPY default/redirect.sh          /var/www/default/redirect.sh
 COPY default/buildLocalConf.sh    /var/www/default/buildLocalConf.sh
 COPY default/local.conf           /var/www/default/local.conf
-COPY default/not_found.html       /var/www/default/not_found.html
-COPY default/searching.html       /var/www/default/searching.html
+COPY default/not_found.sh         /var/www/default/not_found.sh
+COPY default/searching.sh         /var/www/default/searching.sh
 
 # This points the unmatched nginx request to default.sh
 COPY default.conf  /etc/nginx/conf.d/default.conf
 
 
-RUN chmod +x /init.sh /var/www/default/redirect.sh /var/www/default/buildLocalConf.sh &&\
+RUN chmod +x /init.sh\
+		/var/www/default/redirect.sh\
+		/var/www/default/buildLocalConf.sh\
+		/var/www/default/not_found.sh\
+		/var/www/default/searching.sh &&\
 	apk update &&\
 	apk upgrade &&\
 	apk add fcgiwrap &&\

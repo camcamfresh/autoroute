@@ -1,3 +1,6 @@
+cat <<EOF
+Status: 404 Not Found
+
 <!DOCTYPE html>
 <html lang=en>
 <meta charset=utf-9>
@@ -36,3 +39,5 @@
 
 </style>
 <p><b>Error 404</b> The request URL was not found on this server.</p>
+EOF
+exit 404;

@@ -9,23 +9,20 @@ PARAMETER=$(echo $REQUEST_URI | sed -nE 's/\/(.*)/\1/p' | sed -E 's/favicon.ico/
 if [[ $SUBDOMAIN ]]; then
     # Divert Local Request
     if [[ $DOMAIN == 'localhost' || $DOMAIN == '127.0.0.1' ]]; then
-        # Search Docker & Create Nginx Conf
+        # Search Docker & Create Nginx Conf Immediately
         ./buildLocalConf.sh $DOMAIN $SUBDOMAIN $PARAMETER;
+
         if [ $? -eq 0 ]; then
-            echo -e 'Status: 200 OK\n\n';
-            cat searching.html;
-            return 0;
+            source searching.sh 5;
         fi
     else
         # Divert TLD Request
         for RECOGNIZED_DOMAIN in $DOMAINS; do
             if [[ $RECOGNIZED_DOMAIN == $DOMAIN ]]; then
-                ./buildLocalConf.sh $DOMAIN $SUBDOMAIN $PARAMETER;
+                (./buildLocalConf.sh $DOMAIN $SUBDOMAIN $PARAMETER > /dev/null 2> /dev/null &);
                 # ./requestCertbot.sh $DOMAIN $SUBDOMAIN &
                 if [ $? -eq 0 ]; then
-                    echo -e 'Status: 200 OK\n\n';
-                    cat searching.html;
-                    return 0;
+                    source searching.sh 60;
                 fi
                 # Create Local Redirect
                 # Start SSL
@@ -35,7 +32,7 @@ if [[ $SUBDOMAIN ]]; then
 fi
 
 # Return Not Found
-echo -e 'Status: 404 Not Found\n\n';
-cat not_found.html;
-return 0;
+source not_found.sh;
 
+echo -e "Status: 500 Internal Server Error\n"
+return 1;

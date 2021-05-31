@@ -1,3 +1,6 @@
+cat <<EOF
+Status: 503 Service Unavailable
+
 <!DOCTYPE html>
 <html lang=en>
 <meta charset=utf-9>
@@ -47,3 +50,5 @@
     }, 1000)
     element.innerHTML = `Reloading in ${timeout} seconds.`
 </script>
+EOF
+exit 503;
