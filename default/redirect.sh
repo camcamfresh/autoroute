@@ -19,7 +19,8 @@ if [[ $SUBDOMAIN ]]; then
         for TLD in $DOMAINS; do
             if [[ $TLD == $DOMAIN ]]; then
                 ./buildLocalConf.sh $DOMAIN $SUBDOMAIN $PARAMETER &
-                ./requestCertbot.sh $DOMAIN $SUBDOMAIN &
+                # ./requestCertbot.sh $DOMAIN $SUBDOMAIN &
+                echo -e 'Status: 200 OK\n\n';
                 cat searching.html;
                 return 0;
                 # Create Local Redirect

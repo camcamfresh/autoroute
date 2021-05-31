@@ -17,7 +17,7 @@ COPY default/searching.html       /var/www/default/searching.html
 COPY default.conf  /etc/nginx/conf.d/default.conf
 
 
-RUN chmod +x /init.sh /var/www/default/redirect.sh &&\
+RUN chmod +x /init.sh /var/www/default/redirect.sh /var/www/default/buildLocalConf.sh &&\
 	apk update &&\
 	apk upgrade &&\
 	apk add fcgiwrap &&\
