@@ -10,19 +10,23 @@ if [[ $SUBDOMAIN ]]; then
     # Divert Local Request
     if [[ $DOMAIN == 'localhost' || $DOMAIN == '127.0.0.1' ]]; then
         # Search Docker & Create Nginx Conf
-        ./buildLocalConf.sh $DOMAIN $SUBDOMAIN $PARAMETER &
-        echo -e 'Status: 200 OK\n\n';
-        cat searching.html;
-        return 0;
+        ./buildLocalConf.sh $DOMAIN $SUBDOMAIN $PARAMETER;
+        if [ $? -eq 0 ]; then
+            echo -e 'Status: 200 OK\n\n';
+            cat searching.html;
+            return 0;
+        fi
     else
         # Divert TLD Request
         for TLD in $DOMAINS; do
             if [[ $TLD == $DOMAIN ]]; then
-                ./buildLocalConf.sh $DOMAIN $SUBDOMAIN $PARAMETER &
+                ./buildLocalConf.sh $DOMAIN $SUBDOMAIN $PARAMETER;
                 # ./requestCertbot.sh $DOMAIN $SUBDOMAIN &
-                echo -e 'Status: 200 OK\n\n';
-                cat searching.html;
-                return 0;
+                if [ $? -eq 0 ]; then
+                    echo -e 'Status: 200 OK\n\n';
+                    cat searching.html;
+                    return 0;
+                fi
                 # Create Local Redirect
                 # Start SSL
             fi

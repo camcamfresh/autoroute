@@ -56,4 +56,4 @@ if os.system(f"""
  nginx -s reload
 \n""") != 0:
     print('Unable to create conf file for ' + subdomain, sys.stderr)
-
+exit(0)
