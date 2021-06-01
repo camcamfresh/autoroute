@@ -14,9 +14,7 @@ COPY init.sh       /init.sh
 
 # These are used to respond to 404 request & to start a daemon for searching.
 COPY default/redirect.sh          /var/www/default/redirect.sh
-COPY default/buildLocalConf.sh    /var/www/default/buildLocalConf.sh
 COPY default/createConf.py        /var/www/default/createConf.py
-COPY default/local.conf           /var/www/default/local.conf
 COPY default/not_found.sh         /var/www/default/not_found.sh
 COPY default/searching.sh         /var/www/default/searching.sh
 
@@ -26,7 +24,6 @@ COPY default.conf  /etc/nginx/conf.d/default.conf
 
 RUN chmod +x /init.sh\
 		/var/www/default/redirect.sh\
-		/var/www/default/buildLocalConf.sh\
 		/var/www/default/createConf.py\
 		/var/www/default/not_found.sh\
 		/var/www/default/searching.sh &&\
