@@ -41,7 +41,7 @@ if container_ip == '':
         networks = container.attrs['NetworkSettings']['Networks']
         for net_key in networks.keys():
             if container_ip == '':
-                container_ip = networks[net_key]['IP Address']
+                container_ip = networks[net_key]['IPAddress']
     except Exception as e:
         print(f"Unknown error occured getting container IP address: {str(e)}", file=sys.stderr)
         exit(1)
@@ -93,7 +93,7 @@ if len(container_locations) != 2:
         except:
             pass
 
-if len(ports) == 0 or len(ports) > 2:
+if len(container_locations) == 0:
     print('Cannot determine a reachable port.', file=sys.stderr)
     exit(1)
 
