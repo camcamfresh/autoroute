@@ -6,7 +6,7 @@ ENV      EMAIL                  email@example.com
 EXPOSE   80
 EXPOSE   443
 VOLUME   /certs                 /certs
-VOLUME   /conf.d                /etc/nginx/conf.d
+VOLUME   /nginx                 /etc/nginx
 
 # This shell is used to execute both fcgiwrap & nginx
 COPY init.sh       /init.sh
@@ -14,7 +14,7 @@ COPY init.sh       /init.sh
 # These are used to respond to 404 request & to start a daemon for searching.
 COPY default/redirect.sh          /var/www/default/redirect.sh
 COPY default/createConf.py        /var/www/default/createConf.py
-COPY default/requestCert.sh        /var/www/default/requestCert.sh
+COPY default/requestCert.sh       /var/www/default/requestCert.sh
 COPY default/not_found.sh         /var/www/default/not_found.sh
 COPY default/searching.sh         /var/www/default/searching.sh
 COPY default/ssl.conf             /var/www/default/ssl.conf

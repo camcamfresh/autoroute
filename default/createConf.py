@@ -79,8 +79,7 @@ if len(container_locations) != 2:
     for port_key in ports.keys():
         try:
             declared_port = re.search('[0-9]+', ports[port_key]).group(0)
-
-                                          
+                      
             request = urllib.request.urlopen(f"{http_ip}:{declared_port}")
             if request.getcode() == 200 and request.geturl().startswith(http_ip):
                 container_locations.append(f"{http_ip}:{declared_port}")
@@ -110,12 +109,16 @@ with open(f"/etc/nginx/conf.d/{server}.conf", 'w') as conf:
         elif httpsLocation == '' and location.startswith('https://'):
             httpsLocation = location
 
-    if httpsLocation == '':
-        httpLocation = f"proxy_pass {httpLocation}"
-    else:
-        httpLocation = f"return 301 {httpsLocation}"
-        
+    if with_ssl:
+        if httpsLocation == '':
+            httpsLocation = httpLocation
+        httpLocation = ''
 
+    if httpLocation == '':
+        httpLocation = f"return 301 https://{server}"
+    else:
+        httpLocation = f"proxy_pass {httpLocation}"
+    
     conf.write(f"""server {{
     listen 80;
     server_name {server};
@@ -128,11 +131,10 @@ with open(f"/etc/nginx/conf.d/{server}.conf", 'w') as conf:
 
     if with_ssl:
         ssl_conf = ' ssl'
-        ssl_location = f"include /etc/nginx/ssl.d/{server}.ssl.conf;\n"
+        ssl_location = f"include /etc/nginx/ssl.d/{server}/ssl.conf;\n"
     else:
         ssl_conf = ''
     
-
     if httpsLocation != '':
         conf.write(f"""
 server {{

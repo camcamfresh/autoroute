@@ -43,5 +43,9 @@ if [[ -d "$REQUESTED_DOMAIN_DIR" ]]; then
     done;
 fi
 
-cat ssl.conf | sed "s/{SERVER_NAME}/$REQUESTED_DOMAIN/g" > /etc/nginx/ssl.d/$REQUESTED_DOMAIN.ssl.conf;
+[[ -d /etc/nginx/ssl.d/$REQUESTED_DOMAIN ]] || mkdir -p /etc/nginx/ssl.d/$REQUESTED_DOMAIN/
+cat ssl.conf | sed "s/{SERVER_NAME}/$REQUESTED_DOMAIN/g" > /etc/nginx/ssl.d/$REQUESTED_DOMAIN/ssl.conf;
+cp "$CONFIG_DIR/certs/$REQUESTED_DOMAIN/fullchain.pem" "/etc/nginx/ssl.d/$REQUESTED_DOMAIN/fullchain.pem";
+cp "$CONFIG_DIR/certs/$REQUESTED_DOMAIN/privkey.pem" "/etc/nginx/ssl.d/$REQUESTED_DOMAIN/privkey.pem"
+nginx -s reload
 exit 0;
