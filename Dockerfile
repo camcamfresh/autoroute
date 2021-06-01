@@ -7,7 +7,6 @@ EXPOSE   80
 EXPOSE   443
 VOLUME   /certs                 /certs
 VOLUME   /conf.d                /etc/nginx/conf.d
-VOLUME   /var/run/docker.sock   /var/run/docker.sock
 
 # This shell is used to execute both fcgiwrap & nginx
 COPY init.sh       /init.sh
