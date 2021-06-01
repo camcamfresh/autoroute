@@ -1,3 +1,4 @@
+#!/bin/sh
 cat <<EOF
 Status: 503 Service Unavailable
 
@@ -36,19 +37,19 @@ Status: 503 Service Unavailable
         text-decoration: none
     }
 </style>
-<p>The request URL was not found. Please wait while we look on the server.</p>
+<p>The requested URL was not found. Please wait while we look on the server.</p>
 <p id='reload'></p>
 <script type="text/JavaScript">
     var element = document.getElementById('reload');
     var timeout = 10;
     var timer = setInterval(() => {
-        element.innerHTML = `Reloading in ${timeout} seconds.`
+        element.innerHTML = 'Reloading in ' + timeout + ' seconds.'
         if(timeout == 0) {
             location.reload();
             clearInterval(timer);
         } else timeout = timeout - 1;
     }, 1000)
-    element.innerHTML = `Reloading in ${timeout} seconds.`
+    element.innerHTML = 'Reloading in ' + timeout + ' seconds.'
 </script>
 EOF
-exit 503;
+exit 0;

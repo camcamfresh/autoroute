@@ -143,3 +143,6 @@ server {{
     }}
 }}
 """)
+
+os.system('nginx -s reload')
+exit(0)

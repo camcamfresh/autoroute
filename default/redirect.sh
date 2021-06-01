@@ -43,4 +43,4 @@ fi
 source not_found.sh;
 
 echo -e "Status: 500 Internal Server Error\n"
-return 500;
+return 0;

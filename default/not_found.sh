@@ -1,3 +1,4 @@
+#!/bin/sh
 cat <<EOF
 Status: 404 Not Found
 
@@ -38,6 +39,6 @@ Status: 404 Not Found
 
 
 </style>
-<p><b>Error 404</b> The request URL was not found on this server.</p>
+<p><b>Error 404</b> The requested URL was not found on this server.</p>
 EOF
-exit 404;
+exit 0;
