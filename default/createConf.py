@@ -128,6 +128,7 @@ with open(f"/etc/nginx/conf.d/{server}.conf", 'w') as conf:
 
     if with_ssl:
         ssl_conf = ' ssl'
+        ssl_location = f"include /etc/nginx/ssl.d/{server}.ssl.conf;\n"
     else:
         ssl_conf = ''
     
@@ -137,7 +138,7 @@ with open(f"/etc/nginx/conf.d/{server}.conf", 'w') as conf:
 server {{
     listen 443{ssl_conf};
     server_name {server};
-
+    {ssl_location}
     location / {{
         proxy_pass {httpsLocation};
     }}

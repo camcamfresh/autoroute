@@ -21,9 +21,8 @@ if [[ $SUBDOMAIN ]]; then
         # Divert TLD Request
         for RECOGNIZED_DOMAIN in $DOMAINS; do
             if [[ $RECOGNIZED_DOMAIN == $DOMAIN ]]; then
-                ./createConf.py "SSL_OFF" $DOMAIN $SUBDOMAIN $PARAMETER;
-
-                # ./requestCertbot.sh $DOMAIN $SUBDOMAIN &
+                ./createConf.py "SSL_ON" $DOMAIN $SUBDOMAIN $PARAMETER;
+                ./requestCert.sh $DOMAIN $SUBDOMAIN > /dev/null 2> /dev/null &
                 if [ $? -eq 0 ]; then
                     source searching.sh 60;
                 fi
