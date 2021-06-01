@@ -10,7 +10,9 @@ if [[ $SUBDOMAIN ]]; then
     # Divert Local Request
     if [[ $DOMAIN == 'localhost' || $DOMAIN == '127.0.0.1' ]]; then
         # Search Docker & Create Nginx Conf Immediately
-        ./buildLocalConf.sh $DOMAIN $SUBDOMAIN $PARAMETER;
+        # ./buildLocalConf.sh $DOMAIN $SUBDOMAIN $PARAMETER;
+
+        ./createConf.py "SSL_OFF" $DOMAIN $SUBDOMAIN $PARAMETER;
 
         if [ $? -eq 0 ]; then
             source searching.sh 5;
@@ -19,7 +21,8 @@ if [[ $SUBDOMAIN ]]; then
         # Divert TLD Request
         for RECOGNIZED_DOMAIN in $DOMAINS; do
             if [[ $RECOGNIZED_DOMAIN == $DOMAIN ]]; then
-                (./buildLocalConf.sh $DOMAIN $SUBDOMAIN $PARAMETER > /dev/null 2> /dev/null &);
+                ./createConf.py "SSL_OFF" $DOMAIN $SUBDOMAIN $PARAMETER;
+
                 # ./requestCertbot.sh $DOMAIN $SUBDOMAIN &
                 if [ $? -eq 0 ]; then
                     source searching.sh 60;
@@ -29,10 +32,15 @@ if [[ $SUBDOMAIN ]]; then
             fi
         done
     fi
+else
+    true;
+    # TODO: Need to decide if this functionality is desired.
+    # Maybe Wait A Second to Simulate Processing
+    # sleep $(( $RANDOM % 2))
 fi
 
 # Return Not Found
 source not_found.sh;
 
 echo -e "Status: 500 Internal Server Error\n"
-return 1;
+return 500;
