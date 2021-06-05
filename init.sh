@@ -2,10 +2,18 @@
 
 # Source: https://docs.docker.com/config/containers/multi-service_container/
 
+# Make CGI Scripts Exectuable
+chmod +x /var/www/default/*.sh /var/www/default/*.py;
+
+# Create Logging Folders
+[[ -d /var/log/fcgiwrap ]] || mkdir -p /var/log/fcgiwrap
+ln -f -s /dev/stdout /var/log/fcgiwrap/stdout.log
+ln -f -s /dev/stderr /var/log/fcgiwrap/stderr.log
+
 # Start fcgiwrap process
 echo 'Starting fcgiwrap';
 [[ -e /var/run/fcgiwrap.sock ]] && rm /var/run/fcgiwrap.sock;
-/usr/bin/fcgiwrap -s unix:/var/run/fcgiwrap.sock &
+/usr/bin/fcgiwrap -s unix:/var/run/fcgiwrap.sock > /var/log/fcgiwrap/stdout.log 2> /var/log/fcgiwrap/stderr.log &
 
 status=$?;
 echo "fcgiwrap start status: $status";

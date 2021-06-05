@@ -23,12 +23,7 @@ COPY default/ssl.conf             /var/www/default/ssl.conf
 COPY default.conf  /etc/nginx/conf.d/default.conf
 
 
-RUN chmod +x /init.sh\
-		/var/www/default/redirect.sh\
-		/var/www/default/requestCert.sh\
-		/var/www/default/createConf.py\
-		/var/www/default/not_found.sh\
-		/var/www/default/searching.sh &&\
+RUN chmod +x /init.sh &&\
 	apk update &&\
 	apk upgrade &&\
 	apk add fcgiwrap py3-pip gcc python3-dev musl-dev libffi-dev cargo py-cryptography &&\
