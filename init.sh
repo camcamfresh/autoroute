@@ -5,7 +5,7 @@
 # Start fcgiwrap process
 echo 'Starting fcgiwrap';
 [[ -e /var/run/fcgiwrap.sock ]] && rm /var/run/fcgiwrap.sock;
-/usr/bin/fcgiwrap -s unix:/var/run/fcgiwrap.sock &
+/usr/bin/fcgiwrap -f -s unix:/var/run/fcgiwrap.sock &
 
 status=$?;
 echo "Status: $status";
