@@ -173,7 +173,7 @@ server {{
     server_name {server};
     {ssl_location}
     location / {{
-        proxy_pass {httpsLocation};
+        {httpsLocation};
     }}
 }}
 """)
