@@ -22,7 +22,6 @@ COPY default/ssl.conf             /var/www/default/ssl.conf
 # This points the unmatched nginx request to default.sh
 COPY default.conf  /etc/nginx/conf.d/default.conf
 
-
 RUN chmod +x /init.sh &&\
 	apk update &&\
 	apk upgrade &&\

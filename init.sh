@@ -5,16 +5,19 @@
 # Make CGI Scripts Exectuable
 chmod +x /var/www/default/*.sh /var/www/default/*.py;
 
-# Create Logging Folders
-[[ -d /var/log/fcgiwrap ]] || mkdir -p /var/log/fcgiwrap
-ln -f -s /dev/stdout /var/log/fcgiwrap/stdout.log
-ln -f -s /dev/stderr /var/log/fcgiwrap/stderr.log
+# Setup Logging
+[[ -d /var/log/autocert ]] || mkdir -p /var/log/autocert;
+ln -f -s /dev/stderr /var/log/autocert/stderr.log;
+ln -f -s /dev/stdout /var/log/autocert/stdout.log;
+export STDERR='/var/log/autocert/stderr.log';
+export STDOUT='/var/log/autocert/stdout.log';
 
 # Start fcgiwrap process
 echo 'Starting fcgiwrap';
 [[ -e /var/run/fcgiwrap.sock ]] && rm /var/run/fcgiwrap.sock;
-/usr/bin/fcgiwrap -s unix:/var/run/fcgiwrap.sock > /var/log/fcgiwrap/stdout.log 2> /var/log/fcgiwrap/stderr.log &
+/usr/bin/fcgiwrap -s unix:/var/run/fcgiwrap.sock &
 
+# Check fcgiwrap start status
 status=$?;
 echo "fcgiwrap start status: $status";
 if [ $status -ne 0 ]; then
@@ -22,18 +25,20 @@ if [ $status -ne 0 ]; then
   exit $status;
 fi
 
-# Give nginx equal access to socket
+# Wait for fcgiwrap socket
 echo 'Waiting for fcgiwrap socket';
 while [ ! -S /var/run/fcgiwrap.sock ]; do sleep 1; done
 
+# Give nginx equal access to socket
 echo 'Granting nginx access to socket';
 chmod 775 /var/run/fcgiwrap.sock;
 chgrp nginx /var/run/fcgiwrap.sock;
 
-echo 'Starting nginx';
 # Start nginx process
+echo 'Starting nginx';
 nginx -g 'daemon off;' &
 
+# Check nginx start status
 status=$?;
 echo "nginx start status: $status";
 if [ $status -ne 0 ]; then

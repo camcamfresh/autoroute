@@ -6,9 +6,9 @@ SUBDOMAIN=$(echo $HTTP_HOST | sed -nE "s/(.*)[.]$DOMAIN.*/\1/p" | tr '[:upper:]'
 PARAMETER=$(echo $REQUEST_URI | sed -nE 's/\/(.*)/\1/p' | sed -E 's/favicon.ico//');
 
 if [[ $PARAMETER ]]; then
-    echo "redirect.sh: Redirecting $SUBDOMAIN request for $DOMAIN searching for container $PARAMETER" > /dev/stderr
+    echo "redirect.sh: Redirecting $SUBDOMAIN request for $DOMAIN searching for container $PARAMETER" > "$STDOUT"
 else
-    echo "redirect.sh: Redirecting $SUBDOMAIN request for $DOMAIN searching for container $SUBDOMAIN" > /dev/stderr
+    echo "redirect.sh: Redirecting $SUBDOMAIN request for $DOMAIN searching for container $SUBDOMAIN" > "$STDOUT"
 fi
 
 # Subdomain Required for Search
@@ -16,7 +16,7 @@ if [[ $SUBDOMAIN ]]; then
     # Divert Local Request
     if [[ $DOMAIN == 'localhost' || $DOMAIN == '127.0.0.1' ]]; then
         # Search Docker & Create Nginx Conf Immediately
-        ./createConf.py "SSL_OFF" "$DOMAIN" "$SUBDOMAIN" "$PARAMETER" > /var/log/fcgiwrap/stdout.log 2> /var/log/fcgiwrap/stderr.log;
+        ./createConf.py "SSL_OFF" "$DOMAIN" "$SUBDOMAIN" "$PARAMETER";
 
         if [ $? -eq 0 ]; then
             source searching.sh 5;
@@ -25,16 +25,22 @@ if [[ $SUBDOMAIN ]]; then
         # Divert TLD Request
         for RECOGNIZED_DOMAIN in $DOMAINS; do
             if [[ $RECOGNIZED_DOMAIN == $DOMAIN ]]; then
-                # Start SSL Certificate Process
-                # fcgiwrap is attached to the stdout/err file, we must close it to start a backgroud process
-                # ./requestCert.sh "$DOMAIN" "$SUBDOMAIN" > /var/log/fcgiwrap/stdout.log 2> /var/log/fcgiwrap/stderr.log &
+                # Search Docker & Create Nginx HTTP Conf
+                ./createConf.py "SSL_OFF" "$DOMAIN" "$SUBDOMAIN" "$PARAMETER";
                 
-                # Create Temporary HTTP Configuration File
-                ./createConf.py "SSL_OFF" "$DOMAIN" "$SUBDOMAIN" "$PARAMETER"  > /var/log/fcgiwrap/stdout.log 2> /var/log/fcgiwrap/stderr.log;
-                
-                # If HTTP Config was successful redirect there, otherwise wait for SSL
-                if [ $? -eq 0 ]; then
-                    source searching.sh 5;
+                STATUS=$?
+                if [[ $STATUS -ne 1 ]]; then
+                    # Start SSL Certificate Process
+                    # fcgiwrap is attached to the stdout/err file
+                    #  we must close its output to start it as a backgroud process
+                    ./requestCert.sh "$DOMAIN" "$SUBDOMAIN" "$PARAMETER" > /dev/null 2> /dev/null &
+
+                    # If HTTP Config was successful redirect there, otherwise wait for SSL
+                    if [[ $STATUS -eq 0 ]]; then
+                        source searching.sh 5;
+                    elif [[ $STATUS -eq 2 ]]; then
+                        source searching.sh 60;
+                    fi
                 fi
             fi
         done
