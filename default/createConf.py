@@ -1,9 +1,7 @@
 #!/usr/bin/python3
 import docker, os, re, ssl, sys, urllib;
 
-with_ssl = bool(sys.argv[1] == "SSL_ON")
-domain = sys.argv[2]
-subdomain = sys.argv[3]
+print(f"createConf executed: {sys.argv}", file=sys.stderr)
 container_name = ''
 
 # Check Arguments & Set Variables
@@ -15,7 +13,9 @@ else:
     print(f"Invalid Usage: {sys.argv[0]} SSL_(ON|OFF) DOMAIN SUBDOMAIN [PARAMETERS]")
     exit(1)
 
-print(f"createConf executed: {sys.argv}", file=sys.stderr)
+with_ssl = bool(sys.argv[1] == "SSL_ON")
+domain = sys.argv[2]
+subdomain = sys.argv[3]
 
 # Search for Docker Container
 print(f"Searching for docker container", file=sys.stderr)

@@ -5,10 +5,10 @@
 # Start fcgiwrap process
 echo 'Starting fcgiwrap';
 [[ -e /var/run/fcgiwrap.sock ]] && rm /var/run/fcgiwrap.sock;
-/usr/bin/fcgiwrap -f -s unix:/var/run/fcgiwrap.sock &
+/usr/bin/fcgiwrap -s unix:/var/run/fcgiwrap.sock &
 
 status=$?;
-echo "Status: $status";
+echo "fcgiwrap start status: $status";
 if [ $status -ne 0 ]; then
   echo "Failed to start fcgiwrap: $status";
   exit $status;
@@ -17,6 +17,7 @@ fi
 # Give nginx equal access to socket
 echo 'Waiting for fcgiwrap socket';
 while [ ! -S /var/run/fcgiwrap.sock ]; do sleep 1; done
+
 echo 'Granting nginx access to socket';
 chmod 775 /var/run/fcgiwrap.sock;
 chgrp nginx /var/run/fcgiwrap.sock;
@@ -26,6 +27,7 @@ echo 'Starting nginx';
 nginx -g 'daemon off;' &
 
 status=$?;
+echo "nginx start status: $status";
 if [ $status -ne 0 ]; then
   echo "Failed to start nginx: $status";
   kill $(ps aux | grep '/usr/bin/fcgiwrap' | grep -q -v grep | awk '{print $1}');

@@ -16,7 +16,7 @@ if [[ $SUBDOMAIN ]]; then
     # Divert Local Request
     if [[ $DOMAIN == 'localhost' || $DOMAIN == '127.0.0.1' ]]; then
         # Search Docker & Create Nginx Conf Immediately
-        ./createConf.py "SSL_OFF" $DOMAIN $SUBDOMAIN $PARAMETER;
+        ./createConf.py "SSL_OFF" "$DOMAIN" "$SUBDOMAIN" "$PARAMETER";
 
         if [ $? -eq 0 ]; then
             source searching.sh 5;
@@ -25,13 +25,19 @@ if [[ $SUBDOMAIN ]]; then
         # Divert TLD Request
         for RECOGNIZED_DOMAIN in $DOMAINS; do
             if [[ $RECOGNIZED_DOMAIN == $DOMAIN ]]; then
-                ./createConf.py "SSL_OFF" $DOMAIN $SUBDOMAIN $PARAMETER;
-                # ./requestCert.sh $DOMAIN $SUBDOMAIN > /dev/stderr 2> /dev/stderr &
+                # Start SSL Certificate Process
+                # fcgiwrap is attached to the stdout/err file, we must close it to start a backgroud process
+                ./requestCert.sh "$DOMAIN" "$SUBDOMAIN" > /dev/stderr 2> /dev/stderr &
+                
+                # Create Temporary HTTP Configuration File
+                ./createConf.py "SSL_OFF" "$DOMAIN" "$SUBDOMAIN" "$PARAMETER";
+                
+                # If HTTP Config was successful redirect there, otherwise wait for SSL
                 if [ $? -eq 0 ]; then
+                    source searching.sh 5;
+                else
                     source searching.sh 60;
                 fi
-                # Create Local Redirect
-                # Start SSL
             fi
         done
     fi

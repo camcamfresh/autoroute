@@ -1,4 +1,8 @@
 #!/bin/sh
+TIMEOUT=10
+if [[ $1 ]]; then
+    TIMEOUT=$1
+fi
 cat <<EOF
 Status: 503 Service Unavailable
 
@@ -41,7 +45,7 @@ Status: 503 Service Unavailable
 <p id='reload'></p>
 <script type="text/JavaScript">
     var element = document.getElementById('reload');
-    var timeout = 10;
+    var timeout = $TIMEOUT;
     var timer = setInterval(() => {
         element.innerHTML = 'Reloading in ' + timeout + ' seconds.'
         if(timeout == 0) {
