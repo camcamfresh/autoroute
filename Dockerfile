@@ -12,12 +12,7 @@ VOLUME   /nginx                 /etc/nginx
 COPY init.sh       /init.sh
 
 # These are used to respond to 404 request & to start a daemon for searching.
-COPY default/redirect.sh          /var/www/default/redirect.sh
-COPY default/createConf.py        /var/www/default/createConf.py
-COPY default/requestCert.sh       /var/www/default/requestCert.sh
-COPY default/not_found.sh         /var/www/default/not_found.sh
-COPY default/searching.sh         /var/www/default/searching.sh
-COPY default/ssl.conf             /var/www/default/ssl.conf
+COPY scripts       /usr/share/nginx/scripts
 
 # This points the unmatched nginx request to default.sh
 COPY default.conf  /etc/nginx/conf.d/default.conf

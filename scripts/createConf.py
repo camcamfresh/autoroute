@@ -6,9 +6,6 @@
 
 import docker, os, re, ssl, sys, urllib;
 
-sys.stderr = open('/var/log/autocert/stderr.log', 'w')
-sys.stdout = open('/var/log/autocert/stderr.log', 'w')
-
 print(f"createConf executed: {sys.argv}")
 container_name = ''
 
@@ -140,7 +137,7 @@ else:
 
 # Only reason to hit this point is when container is programmed for https, but ssl is off.
 # Exit with special code 2, showing it was reachable. 
-if httpLocation == '':
+if httpLocation == '' and httpsLocation == '':
     print(f"Could not determine http(s) location for {container_location}")
     exit(2)
 elif httpsLocation == '':
