@@ -1,28 +1,24 @@
 FROM nginx:alpine
 
 # Configuration
-ENV      DOMAINS                example.com
-ENV      EMAIL                  email@example.com
-EXPOSE   80
-EXPOSE   443
-VOLUME   /certs                 /certs
-VOLUME   /nginx                 /etc/nginx
+EXPOSE 80
+EXPOSE 443
 
-# This shell is used to execute both fcgiwrap & nginx
-COPY init.sh       /init.sh
+ENV DOMAINS "example.com"
 
-# These are used to respond to 404 request & to start a daemon for searching.
-COPY scripts       /usr/share/nginx/scripts
+VOLUME /certs          /certs
+VOLUME /nginx          /etc/nginx
 
-# This points the unmatched nginx request to default.sh
-COPY default.conf  /etc/nginx/conf.d/default.conf
+# Copy Scripts & Default Files
+COPY entrypoint.sh /entrypoint.sh
+COPY defaults /usr/share/nginx/defaults
+COPY scripts /usr/share/nginx/scripts
 
-RUN chmod +x /init.sh &&\
-	apk update &&\
-	apk upgrade &&\
-	apk add fcgiwrap py3-pip gcc python3-dev musl-dev libffi-dev cargo py-cryptography &&\
-	mkdir -p /var/log/fcgiwrap &&\
-	apk add py3-pip &&\
-	pip3 install -U pip docker certbot certbot-dns-luadns dns-lexicon==3.5
+RUN cp /usr/share/nginx/defaults/default.conf /etc/nginx/conf.d/default.conf &&\
+    chmod 111 /usr/share/nginx/scripts/* &&\
+    apk update &&\
+    apk upgrade &&\
+    apk add py3-pip fcgiwrap &&\
+    pip3 install -U docker
 
-CMD ["/init.sh"]
+CMD ["sh", "/entrypoint.sh"]

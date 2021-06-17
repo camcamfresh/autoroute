@@ -1,11 +1,3 @@
-#!/bin/sh
-TIMEOUT=10
-if [[ $1 ]]; then
-    TIMEOUT=$1
-fi
-cat <<EOF
-Status: 503 Service Unavailable
-
 <!DOCTYPE html>
 <html lang=en>
 <meta charset=utf-9>
@@ -45,7 +37,7 @@ Status: 503 Service Unavailable
 <p id='reload'></p>
 <script type="text/JavaScript">
     var element = document.getElementById('reload');
-    var timeout = $TIMEOUT;
+    var timeout = {TIMEOUT};
     var timer = setInterval(() => {
         element.innerHTML = 'Reloading in ' + timeout + ' seconds.'
         if(timeout == 0) {
@@ -55,5 +47,3 @@ Status: 503 Service Unavailable
     }, 1000)
     element.innerHTML = 'Reloading in ' + timeout + ' seconds.'
 </script>
-EOF
-exit 0;
