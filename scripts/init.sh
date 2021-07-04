@@ -27,8 +27,4 @@ if [ ! -n $(cat /etc/nginx/conf.d/default.conf | sed -n '/listen 443 ssl/p') ]; 
       -e 's/^([ \t]*)(location \/ \{)$/\1include \/etc\/nginx\/ssl.d\/default\/ssl.conf;\n\1\2/';
 fi
 
-if [ $(ps aux | grep "$nginx: master process" | grep -qv grep) -eq 0 ]; then
-    nginx -s reload
-fi
-
 exit 0;

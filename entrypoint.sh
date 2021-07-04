@@ -9,7 +9,7 @@ echo "$0: Setting up logging";
 ln -fs "/proc/$$/fd/1" /var/log/autoroute/stdout.log;
 ln -fs "/proc/$$/fd/2" /var/log/autoroute/stderr.log;
 
-/usr/share/nginx/scripts/init.sh &
+/usr/share/nginx/scripts/init.sh
 
 # Kill process group when this process dies.
 trap 'rm -f /var/run/fcgiwrap.sock; trap - SIGTERM && kill 0' EXIT KILL SIGINT SIGTERM ;

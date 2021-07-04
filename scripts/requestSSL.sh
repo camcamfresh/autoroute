@@ -45,7 +45,7 @@ if [ -n "$DOMAINS" ]; then
     if [ ! "$CERT_NAME" ]; then
         CERT_NAME=$(echo $DOMAINS | sed 's|(.*)(,.+)?|\1|');
     fi
-    OPTIONS="$OPTIONS --domains $DOMAINS";
+    OPTIONS="$OPTIONS --cert-name $CERT_NAME --domains $DOMAINS";
 fi
 
 # Request Certificate via autocert socket
