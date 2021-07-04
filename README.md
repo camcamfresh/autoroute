@@ -14,7 +14,7 @@ Configuration files for a request will be generated on the following conditions:
 - The docker container responds to request from Autoroute (e.g., on same docker network or has exposed ports)
   Otherwise, the request is redirected to the `not_found.html` page.
 
-SSL Certificates are sent to `/certs/autocert.pipe` if available.
+SSL Certificates are sent to `/cert/autocert.sock` if available.
 
 If a configuration file is generated, the request is temporarily redirected to the `searching.html` page.
 
@@ -29,14 +29,14 @@ There are 4 environment variables that must be set in order to execute properly.
 
 ```dockerfile
 ENV DOMAINS="example.com example.org"
-VOLUME "/certs"
+VOLUME "/cert"
 ```
 
 - DOMAINS - a string of recognized domains
   - Space-delineated domains create separate certificates.
 - EMAIL - a single email for certbot to use when requesting each certificate.
-- CERTS_DIR - the container, folder path for certbot configuration.
+- CERT_DIR - the container, folder path for certbot configuration.
   - `luadns.ini` must have the domain's luadns email & api token.
-  - `certs/` contains the SSL certificate files. (Note: These are not symbolic links and should prevent any Docker volume mapping issues.)
+  - `cert/` contains the SSL certificate files. (Note: These are not symbolic links and should prevent any Docker volume mapping issues.)
   - `data/` contains certbot's pervious work and archives.
 - NGINX_DIR - the container, folder path for nginx configuration.

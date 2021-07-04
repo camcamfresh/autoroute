@@ -13,7 +13,7 @@ for DOMAIN in $DOMAINS; do
 done
 
 if [ -n "$OPTIONS" ]; then
-    ./requestSSL.sh --cert-name default $OPTIONS;
+    /usr/share/nginx/scripts/requestSSL.sh --cert-name default $OPTIONS;
 else
     echo "init.sh: No Domains Provided, skipping Not Found Page for HTTPS";
     exit 1;
