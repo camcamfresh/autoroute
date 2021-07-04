@@ -19,6 +19,8 @@ else
     exit 1;
 fi
 
+cp /usr/share/nginx/defaults/default.conf /etc/nginx/conf.d/default.conf;
+
 if [ ! -n $(cat /etc/nginx/conf.d/default.conf | sed -n '/listen 443 ssl/p') ]; then
     sed -i /etc/nginx/conf.d/default.conf -E \
       -e 's/^([ \t]*)(listen 80;)$/\1\2\n\1listen 443 ssl;/' \
