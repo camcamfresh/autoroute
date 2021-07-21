@@ -19,6 +19,7 @@ return_not_found() {
 }
 
 return_searching() {
+	echo "$SUBDOMAIN" >> ./temp_exclude.dat;
 	restore_output;
 	echo -e 'Status: 307 Temporary Redirect\n';
 	cat ../defaults/searching.html | sed -e "s/{TIMEOUT}/$1/g";
@@ -36,25 +37,41 @@ request_ssl() {
 		./requestSSL.sh "-d $SUBDOMAIN.$DOMAIN" &&\
 		./createRoute.py "$DOMAIN" "$SUBDOMAIN"
 	) 3> /dev/null 4>&3 &
+	# Returning file descriptors must be detached for subprocess to function asynchronously.
+}
+
+is_domain() {
+	for TLD_DOMAIN in $DOMAINS; do
+		if [ "$TLD_DOMAIN" = "$DOMAIN" ]; then
+			return 0;
+		fi
+	done
+	return 1;
+}
+
+is_excluded() {
+	EXCLUDE="$(cat ./temp_exclude.dat 2> /dev/null | tr -s '\n' ' ')";
+	for EXCLUSION in $EXCLUDE; do
+		if [ "$EXCLUSION" = "$SUBDOMAIN" ]; then
+			return 0;
+		fi
+	done
+	return 1;
 }
 
 #Process Request
-for ALLOWED_DOMAIN in $DOMAINS; do
-	if [ "$ALLOWED_DOMAIN" = "$DOMAIN" ]; then
-		echo "autoRoute.sh: Domain match found!";
-		./createRoute.py "$DOMAIN" "$SUBDOMAIN";
-		STATUS=$?;
+if is_domain && ! is_excluded; then
+	echo "autoRoute.sh: Domain match found!";
+	./createRoute.py "$DOMAIN" "$SUBDOMAIN";
+	STATUS=$?;
 
-		if [ "$STATUS" -eq 0 ]; then
-			request_ssl;
-			return_searching 5;
-		elif [ "$STATUS" -eq 1 ]; then
-			request_ssl;			
-			return_searching 60;
-		else
-			break;
-		fi
+	if [ "$STATUS" -eq 0 ]; then
+		request_ssl;
+		return_searching 5;
+	elif [ "$STATUS" -eq 1 ]; then
+		request_ssl;
+		return_searching 60;
 	fi
-done
+fi
 
 return_not_found;

@@ -43,7 +43,7 @@ except docker.errors.DockerException as e:
     print(f"createRoute.py: Unable to connect to Docker: {str(e)}", file=sys.stderr)
     exit(2)
 except Exception as e:
-    print(f"createRoute.py: Unknown error occured getting container by name: {str(e)}", file=sys.stderr)
+    print(f"createRoute.py: Unknown error occurred getting container by name: {str(e)}", file=sys.stderr)
     exit(2)
 
 if container is None:
@@ -60,7 +60,7 @@ if container_ip == '':
             if container_ip == '':
                 container_ip = networks[net_key]['IPAddress']
     except Exception as e:
-        print(f"createRoute.py: Unknown error occured getting container IP address: {str(e)}", file=sys.stderr)
+        print(f"createRoute.py: Unknown error occurred getting container IP address: {str(e)}", file=sys.stderr)
         exit(2)
 
 if container_ip == '':
@@ -82,10 +82,10 @@ def isResponsive(address, acceptSelfSigned):
         
         # urlopen will open the URL and follow any redirects; must check for same ip.
         if request.getcode() == 200 and request.geturl().startswith(address):
-            print(f"createRoute.py: Container responsive at URL: {address}")
+            print(f"createRoute.py: Success Container responsive at URL: {address}")
             return True
     except Exception as e:
-        print(f"createRoute.py: Unknown error occured contacting container: {str(e)}", file=sys.stderr)
+        print(f"createRoute.py: Unknown error occurred contacting container: {str(e)}", file=sys.stderr)
     
     print(f"createRoute.py: Container not responsive at URL: {address}", file=sys.stderr)
     return False
@@ -120,7 +120,7 @@ else:
             if container_location != '':
                 break
         except Exception as e:
-            print(f"createRoute.py: Unknown error occured parsing container ports: {str(e)}", file=sys.stderr)
+            print(f"createRoute.py: Unknown error occurred parsing container ports: {str(e)}", file=sys.stderr)
 
 if container_location == '':
     print('createRoute.py: Cannot determine a reachable port.', file=sys.stderr)
