@@ -67,7 +67,7 @@ if is_domain && ! is_excluded; then
 
 	if [ "$STATUS" -eq 0 ]; then
 		request_ssl;
-		return_searching 5;
+		return_searching 30;
 	elif [ "$STATUS" -eq 1 ]; then
 		request_ssl;
 		return_searching 60;
