@@ -35,7 +35,8 @@ SUBDOMAIN=$(echo "$HTTP_HOST" | sed -nE "s/(.*)[.]$DOMAIN.*/\1/p" | tr '[:upper:
 request_ssl() {
 	(
 		./requestSSL.sh "-d $SUBDOMAIN.$DOMAIN" &&\
-		./createRoute.py "$DOMAIN" "$SUBDOMAIN"
+		./createRoute.py "$DOMAIN" "$SUBDOMAIN";
+		sed -i -e "/^$SUBDOMAIN$/d" ./temp_exclude.dat
 	) 3> /dev/null 4>&3 &
 	# Returning file descriptors must be detached for subprocess to function asynchronously.
 }

@@ -19,8 +19,9 @@ done
 if [ -n "$OPTIONS" ]; then
   echo "$0: Requesting SSL Certificates for default.conf"
   /usr/share/nginx/scripts/requestSSL.sh --cert-name default $OPTIONS;
-
-  if [ ! $(cat /etc/nginx/conf.d/default.conf | sed -n '/listen 443 ssl/p') ]; then
+  STATUS=$?
+  
+  if [ "$STATUS" -eq 0 -a ! $(cat /etc/nginx/conf.d/default.conf | sed -n '/listen 443 ssl/p') ]; then
     echo "$0: Add SSL to default.conf"
     sed -i /etc/nginx/conf.d/default.conf -E \
       -e 's/^([ \t]*)(listen 80;)$/\1\2\n\1listen 443 ssl;/' \
