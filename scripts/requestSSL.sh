@@ -53,20 +53,23 @@ echo "$0: Requesting Certificate for $CERT_NAME";
 echo "autocert.sh certonly $OPTIONS" | socat unix-client:/cert/autocert.sock stdin;
 
 # Wait for Certificates
-STEPS=0;
-while sleep 10; do
-    if [ -d "/cert/$CERT_NAME/" ]; then
-        echo "$0: Successfully Generated Requested SSL Certificates";
-        break;
-    fi
+[ -r "/cert/$CERT_NAME" ] || inotifywait -e create --include "$CERT_NAME" -t 60 /cert;
+STATUS=$?;
 
-    if [ "$STEPS" -eq 6 ]; then
-        echo "$0: Waited 60 seconds and did not detect SSL certificates." > /dev/stderr;
-        exit 1;
-    else
-        STEPS=$(($STEPS+1));
-    fi
-done
+if [ $STATUS -eq 0 ]; then
+    [ -r "/cert/$CERT_NAME/fullchain.pem" ] ||  inotifywait -e create --include 'fullchain.pem' -t 60 /cert/$CERT_NAME;
+    STATUS=$?;
+fi
+
+if [ $STATUS -eq 0 ]; then
+    echo "$0: Successfully Generated Requested SSL Certificates";
+elif [ $STATUS -eq 2 ]; then
+    echo "$0: Waited 60 seconds and did not detect SSL certificates." > /dev/stderr;
+    exit 1;
+else
+    echo "$0: Unexpected error occured waiting for certificates";
+    exit 1;
+fi
 
 echo "$0: Creating Nginx Certificate File";
 [[ -d /etc/nginx/ssl.d/$CERT_NAME ]] || mkdir -p /etc/nginx/ssl.d/$CERT_NAME/;
