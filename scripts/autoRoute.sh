@@ -42,8 +42,8 @@ request_ssl() {
 }
 
 is_domain() {
-	for TLD_DOMAIN in $DOMAINS; do
-		if [ "$TLD_DOMAIN" = "$DOMAIN" ]; then
+	for TLD in $TLDS; do
+		if [ "$TLD" = "$DOMAIN" ]; then
 			return 0;
 		fi
 	done
@@ -71,7 +71,7 @@ if is_domain && ! is_excluded; then
 		return_searching 30;
 	elif [ "$STATUS" -eq 1 ]; then
 		request_ssl;
-		return_searching 60;
+		return_searching 90;
 	fi
 fi
 

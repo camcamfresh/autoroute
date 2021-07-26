@@ -4,7 +4,7 @@ FROM nginx:alpine
 EXPOSE 80
 EXPOSE 443
 
-ENV DOMAINS "example.com"
+ENV TLDS "example.com"
 
 VOLUME /cert        /cert
 VOLUME /nginx       /etc/nginx

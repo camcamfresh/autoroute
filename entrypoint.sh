@@ -5,7 +5,7 @@
 
 # Setup Logging
 echo "$0: Setting up logging";
-[[ -d /var/log/autoroute ]] || mkdir -p /var/log/autoroute;
+[ -d /var/log/autoroute ] || mkdir -p /var/log/autoroute;
 ln -fs "/proc/$$/fd/1" /var/log/autoroute/stdout.log;
 ln -fs "/proc/$$/fd/2" /var/log/autoroute/stderr.log;
 
@@ -16,7 +16,7 @@ trap 'rm -f /var/run/fcgiwrap.sock; trap - SIGTERM && kill 0' EXIT KILL SIGINT S
 
 # Start fcgiwrap
 echo "$0: Starting fcgiwrap";
-[[ -e /var/run/fcgiwrap.sock ]] && rm /var/run/fcgiwrap.sock;
+[ -e /var/run/fcgiwrap.sock ] && rm /var/run/fcgiwrap.sock;
 /usr/bin/fcgiwrap -s unix:/var/run/fcgiwrap.sock &
 
 # Check Start Status

@@ -8,11 +8,11 @@ echo "$0: Copying default.conf"
 cp /usr/share/nginx/defaults/default.conf /etc/nginx/conf.d/default.conf;
 
 # Check & Setup TLD Wildcard Certificates Options
-for DOMAIN in $DOMAINS; do
+for TLD in $TLDS; do
   if [ ! "$OPTIONS" ]; then
-    OPTIONS="-d $DOMAIN -d *.$DOMAIN";
+    OPTIONS="-d $TLD -d *.$TLD";
   else
-    OPTIONS="$OPTIONS -d $DOMAIN -d *.$DOMAIN";
+    OPTIONS="$OPTIONS -d $TLD -d *.$TLD";
   fi
 done
 
